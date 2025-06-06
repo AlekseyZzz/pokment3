@@ -41,7 +41,7 @@
             <activeByDefault>true</activeByDefault>
           </activation>
       <properties>
-        <api-filename-path>${basedir}/../api-source/dev/</api-filename-path>
+        <api-filename-path>${basedir}/src/main/resources/</api-filename-path>
       </properties>
         </profile>
         <profile>
@@ -50,7 +50,7 @@
             <activeByDefault>false</activeByDefault>
           </activation>
       <properties>
-        <api-filename-path>${basedir}/../api-source/prod/</api-filename-path>
+        <api-filename-path>${basedir}/src/main/resources/</api-filename-path>
       </properties>
         </profile>
   </profiles>
