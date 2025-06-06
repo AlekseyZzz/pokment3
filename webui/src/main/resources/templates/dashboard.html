@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Dashboard - AI Poker Mentor</title>
+</head>
+<body>
+    <main th:fragment="content">
+        <!-- Game Quality Analytics -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <h5 class="card-title mb-0">
+                        <i data-lucide="brain" class="me-2 text-primary"></i>
+                        Game Quality & Projections
+                    </h5>
+                </div>
+                
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h6 class="text-muted mb-3">Game Quality Distribution</h6>
+                        <div class="position-relative" style="height: 300px;">
+                            <canvas id="gameQualityChart"></canvas>
+                        </div>
+                        
+                        <div class="mt-4 p-3 bg-success bg-opacity-10 border-start border-success border-4 rounded-end">
+                            <p class="mb-2 fw-medium">
+                                <i data-lucide="brain" class="me-2 text-success"></i>
+                                Your current A-Game frequency is <span class="text-success fw-bold" th:text="${aGamePercentage} + '%'">25%</span>
+                            </p>
+                            <p class="text-muted small mb-3">
+                                This reflects how often you play at your highest level of focus and decision-making.
+                            </p>
+                            <button class="btn btn-success btn-sm">
+                                <i data-lucide="target" class="me-1"></i>
+                                Set A-Game Goal
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-6">
+                        <h6 class="text-muted mb-3">Monthly Projection</h6>
+                        <div class="p-3 bg-primary bg-opacity-10 rounded mb-3">
+                            <p class="text-primary small mb-1">Overall Weighted Winrate</p>
+                            <p class="h4 text-primary fw-bold mb-0">4.2 bb/100</p>
+                        </div>
+                        
+                        <div class="row g-3 mb-3">
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Monthly Hands</label>
+                                <input type="number" class="form-control" value="30000" id="monthlyHands">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small text-muted">Big Blind ($)</label>
+                                <input type="number" class="form-control" value="2" id="bigBlind">
+                            </div>
+                        </div>
+                        
+                        <div class="p-4 bg-gradient text-white rounded mb-3" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8);">
+                            <p class="h3 mb-1">$2,520.00</p>
+                            <p class="small opacity-75">Expected Monthly Profit</p>
+                        </div>
+                        
+                        <div class="p-4 bg-gradient text-white rounded" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <div>
+                                    <p class="fw-medium mb-1">With Doubled A-Game:</p>
+                                    <p class="small opacity-75 mb-0">A: 50% | B: 30% | C: 15% | D: 5%</p>
+                                </div>
+                                <div class="d-flex align-items-center">
+                                    <i data-lucide="trending-up" class="me-1"></i>
+                                    <span>+18.5%</span>
+                                </div>
+                            </div>
+                            <p class="h3 mb-0">$2,986.20</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Quick Actions -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i data-lucide="zap" class="me-2 text-primary"></i>
+                            Quick Actions
+                        </h5>
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <a th:href="@{/pre-session}" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
+                                    <i data-lucide="arrow-right" class="me-2"></i>
+                                    Start Session
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a th:href="@{/post-session}" class="btn btn-primary btn-lg w-100 d-flex align-items-center justify-content-center">
+                                    <i data-lucide="arrow-left" class="me-2"></i>
+                                    End Session
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a th:href="@{/analysis}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+                                    <i data-lucide="brain" class="me-2"></i>
+                                    Analyze Hand
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                <a th:href="@{/progress}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center">
+                                    <i data-lucide="target" class="me-2"></i>
+                                    Set New Goal
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Top Focus Areas -->
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i data-lucide="target" class="me-2 text-primary"></i>
+                            Top 3 Focus Areas
+                        </h5>
+                        <div class="space-y-3">
+                            <div class="p-3 border rounded">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="d-flex align-items-start">
+                                        <i data-lucide="activity" class="text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <h6 class="mb-1">Control Tilt in Multi-Way Pots</h6>
+                                            <span class="badge bg-purple-subtle text-purple">Mental Game</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="small text-muted">Progress</span>
+                                        <span class="small fw-medium">65%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-3 border rounded">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="d-flex align-items-start">
+                                        <i data-lucide="activity" class="text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <h6 class="mb-1">Improve 3-Bet Range Construction</h6>
+                                            <span class="badge bg-primary-subtle text-primary">Strategy</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="small text-muted">Progress</span>
+                                        <span class="small fw-medium">40%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" style="width: 40%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-3 border rounded">
+                                <div class="d-flex align-items-start justify-content-between">
+                                    <div class="d-flex align-items-start">
+                                        <i data-lucide="activity" class="text-primary me-2 mt-1"></i>
+                                        <div>
+                                            <h6 class="mb-1">Decision Making When Tired</h6>
+                                            <span class="badge bg-warning-subtle text-warning">Physical Game</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="small text-muted">Progress</span>
+                                        <span class="small fw-medium">25%</span>
+                                    </div>
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" style="width: 25%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Performance Metrics -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="card-title mb-0">
+                        <i data-lucide="line-chart" class="me-2 text-primary"></i>
+                        Performance Metrics
+                    </h5>
+                    <select class="form-select" style="width: auto;">
+                        <option>Last 30 days</option>
+                        <option>Last 3 months</option>
+                        <option>Last 6 months</option>
+                        <option>This year</option>
+                    </select>
+                </div>
+                <div style="height: 300px;">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <!-- Recent Sessions -->
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i data-lucide="calendar" class="me-2 text-primary"></i>
+                            Recent Sessions
+                        </h5>
+                        <div class="space-y-3" th:if="${recentSessions != null and !recentSessions.empty}">
+                            <div th:each="session : ${recentSessions}" class="p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h6 class="mb-1" th:text="${session.gameType} + ' ' + ${session.stakes}">NL Hold'em $2/$5</h6>
+                                        <p class="text-muted small mb-0" th:text="${#temporals.format(session.createdAt, 'MMM dd, yyyy')}">Yesterday</p>
+                                    </div>
+                                    <div class="d-flex align-items-center" th:classappend="${session.profit >= 0} ? 'text-success' : 'text-danger'">
+                                        <i th:data-lucide="${session.profit >= 0} ? 'trending-up' : 'trending-down'" class="me-1"></i>
+                                        <span th:text="'$' + ${#numbers.formatDecimal(session.profit, 0, 2)}">$340</span>
+                                    </div>
+                                </div>
+                                <div class="mt-3 d-flex flex-wrap gap-3">
+                                    <div class="d-flex align-items-center text-muted small">
+                                        <i data-lucide="clock" class="me-1"></i>
+                                        <span th:text="${session.duration} + 'm'">225m</span>
+                                    </div>
+                                    <div class="d-flex align-items-center small">
+                                        <i data-lucide="award" class="me-1" th:classappend="${session.performanceGrade == 'A'} ? 'text-success' : (${session.performanceGrade == 'B'} ? 'text-primary' : (${session.performanceGrade == 'C'} ? 'text-warning' : 'text-danger'))"></i>
+                                        <span th:text="'Performance: ' + ${session.performanceGrade}" th:classappend="${session.performanceGrade == 'A'} ? 'text-success' : (${session.performanceGrade == 'B'} ? 'text-primary' : (${session.performanceGrade == 'C'} ? 'text-warning' : 'text-danger'))">Performance: B+</span>
+                                    </div>
+                                    <div class="d-flex align-items-center text-muted small">
+                                        <i data-lucide="brain" class="me-1"></i>
+                                        <span th:text="${session.mentalState}">Focused</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${recentSessions == null or recentSessions.empty}" class="text-center py-4">
+                            <i data-lucide="calendar" class="text-muted mb-2" style="width: 48px; height: 48px;"></i>
+                            <p class="text-muted">No sessions recorded yet</p>
+                            <a th:href="@{/pre-session}" class="btn btn-primary">Start Your First Session</a>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <a th:href="@{/progress}" class="text-primary text-decoration-none small fw-medium">
+                                View all sessions →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Upcoming Goals -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i data-lucide="target" class="me-2 text-primary"></i>
+                            Upcoming Goals
+                        </h5>
+                        <div class="space-y-3">
+                            <div class="p-3 border rounded">
+                                <h6 class="mb-1">Complete 50 hours of play</h6>
+                                <div class="d-flex align-items-center text-muted small mb-2">
+                                    <i data-lucide="calendar" class="me-1"></i>
+                                    April 15, 2025
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted">Progress</span>
+                                    <span class="small fw-medium">62%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" style="width: 62%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-3 border rounded">
+                                <h6 class="mb-1">Study 3-bet/4-bet dynamics</h6>
+                                <div class="d-flex align-items-center text-muted small mb-2">
+                                    <i data-lucide="calendar" class="me-1"></i>
+                                    April 10, 2025
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted">Progress</span>
+                                    <span class="small fw-medium">30%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            
+                            <div class="p-3 border rounded">
+                                <h6 class="mb-1">Mental Game Journal 15 days</h6>
+                                <div class="d-flex align-items-center text-muted small mb-2">
+                                    <i data-lucide="calendar" class="me-1"></i>
+                                    April 30, 2025
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="small text-muted">Progress</span>
+                                    <span class="small fw-medium">45%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-primary" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-center">
+                            <a th:href="@{/progress}" class="text-primary text-decoration-none small fw-medium">
+                                Manage goals →
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Game Quality Chart
+            const gameQualityCtx = document.getElementById('gameQualityChart').getContext('2d');
+            new Chart(gameQualityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['A-Game', 'B-Game', 'C-Game', 'D-Game'],
+                    datasets: [{
+                        data: [/*[[${aGamePercentage}]]*/ 25, /*[[${bGamePercentage}]]*/ 45, /*[[${cGamePercentage}]]*/ 20, /*[[${dGamePercentage}]]*/ 10],
+                        backgroundColor: [
+                            'rgba(46, 204, 113, 0.8)',
+                            'rgba(52, 152, 219, 0.8)',
+                            'rgba(241, 196, 15, 0.8)',
+                            'rgba(231, 76, 60, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgba(46, 204, 113, 1)',
+                            'rgba(52, 152, 219, 1)',
+                            'rgba(241, 196, 15, 1)',
+                            'rgba(231, 76, 60, 1)'
+                        ],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+            
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [
+                        {
+                            label: 'Game Quality Rating',
+                            data: [80, 75, 82, 88],
+                            borderColor: 'rgb(30, 64, 175)',
+                            backgroundColor: 'rgba(30, 64, 175, 0.5)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Mental Focus',
+                            data: [65, 70, 78, 85],
+                            borderColor: 'rgb(16, 185, 129)',
+                            backgroundColor: 'rgba(16, 185, 129, 0.5)',
+                            tension: 0.3
+                        },
+                        {
+                            label: 'Tilt Frequency',
+                            data: [45, 30, 20, 15],
+                            borderColor: 'rgb(239, 68, 68)',
+                            backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                            tension: 0.3
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    </main>
+</body>
+</html>

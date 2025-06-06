@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{layout :: layout(~{::title}, ~{::main})}">
+<head>
+    <title>Post-Session Reflection - AI Poker Mentor</title>
+</head>
+<body>
+    <main th:fragment="content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="alert alert-info d-flex align-items-center mb-4">
+                                <i data-lucide="info" class="me-3 text-primary"></i>
+                                <p class="mb-0">
+                                    This reflection space is for growth — not judgment.
+                                    Even one honest observation today can improve your future sessions.
+                                </p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h2 class="h4 mb-2">Post-Session Reflection</h2>
+                                <p class="text-muted">
+                                    Analyze your session performance, mental state, and key moments to improve future decision-making.
+                                </p>
+                            </div>
+
+                            <form id="postSessionForm" class="needs-validation" novalidate>
+                                <!-- Session Stats Block -->
+                                <div class="mb-4 p-4 bg-light rounded">
+                                    <h5 class="mb-3">
+                                        <i data-lucide="clock" class="me-2 text-primary"></i>
+                                        Session Summary
+                                    </h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="minutesPlayed" class="form-label">Minutes Played</label>
+                                            <input type="number" class="form-control" id="minutesPlayed" name="duration" placeholder="180" required>
+                                            <div class="invalid-feedback">Please enter session duration.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="gameType" class="form-label">Game Type</label>
+                                            <select class="form-select" id="gameType" name="gameType" required>
+                                                <option value="">Select game type</option>
+                                                <option value="CASH">Cash Game</option>
+                                                <option value="TOURNAMENT">Tournament</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select a game type.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="stakes" class="form-label">Stakes</label>
+                                            <input type="text" class="form-control" id="stakes" name="stakes" placeholder="$2/$5" required>
+                                            <div class="invalid-feedback">Please enter stakes.</div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="profit" class="form-label">Session Result ($)</label>
+                                            <input type="number" step="0.01" class="form-control" id="profit" name="profit" placeholder="340.50">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Energy Level Section -->
+                                <div class="mb-4 p-4 bg-light rounded">
+                                    <h5 class="mb-3">Energy & Mental State</h5>
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label for="energyLevel" class="form-label">Energy Level After Session</label>
+                                            <select class="form-select" id="energyLevel" name="energyLevel">
+                                                <option value="">Select energy level</option>
+                                                <option value="1">Exhausted / Burnt Out</option>
+                                                <option value="2">Mentally Fatigued</option>
+                                                <option value="3">Neutral / Okay</option>
+                                                <option value="4">Good Energy</option>
+                                                <option value="5">Energized</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="performanceGrade" class="form-label">Performance Grade</label>
+                                            <select class="form-select" id="performanceGrade" name="performanceGrade" required>
+                                                <option value="">Select grade</option>
+                                                <option value="A">A - Excellent</option>
+                                                <option value="B">B - Good</option>
+                                                <option value="C">C - Average</option>
+                                                <option value="D">D - Poor</option>
+                                            </select>
+                                            <div class="invalid-feedback">Please select a performance grade.</div>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="mentalState" class="form-label">Mental State Description</label>
+                                            <textarea class="form-control" id="mentalState" name="mentalState" rows="2" 
+                                                placeholder="Describe your mental state during the session..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Mental Game Profile Section -->
+                                <div class="mb-4 p-4 bg-light rounded">
+                                    <h5 class="mb-3">
+                                        <i data-lucide="brain" class="me-2 text-primary"></i>
+                                        Mental Game Profile
+                                    </h5>
+                                    <p class="text-muted small mb-3">
+                                        Which mindset profiles were present in your session?
+                                    </p>
+
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="form-check p-3 border rounded">
+                                                <input class="form-check-input" type="checkbox" id="aGame" name="mentalProfiles" value="A-Game">
+                                                <label class="form-check-label w-100" for="aGame">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">💚</span>
+                                                        <div>
+                                                            <div class="fw-medium">A-Game</div>
+                                                            <small class="text-muted">Focused, confident, present, strong decision-making</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-3 border rounded">
+                                                <input class="form-check-input" type="checkbox" id="bGame" name="mentalProfiles" value="B-Game">
+                                                <label class="form-check-label w-100" for="bGame">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">💛</span>
+                                                        <div>
+                                                            <div class="fw-medium">B-Game</div>
+                                                            <small class="text-muted">Decent focus, some mistakes or autopilot moments</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-3 border rounded">
+                                                <input class="form-check-input" type="checkbox" id="cGame" name="mentalProfiles" value="C-Game">
+                                                <label class="form-check-label w-100" for="cGame">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">🟠</span>
+                                                        <div>
+                                                            <div class="fw-medium">C-Game</div>
+                                                            <small class="text-muted">Emotionally reactive, distracted, unsure</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check p-3 border rounded">
+                                                <input class="form-check-input" type="checkbox" id="dGame" name="mentalProfiles" value="D-Game">
+                                                <label class="form-check-label w-100" for="dGame">
+                                                    <div class="d-flex align-items-center">
+                                                        <span class="me-2">🔴</span>
+                                                        <div>
+                                                            <div class="fw-medium">D-Game</div>
+                                                            <small class="text-muted">Tilt, frustration, mentally checked out</small>
+                                                        </div>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Emotional Review -->
+                                <div class="mb-4">
+                                    <h5 class="mb-3">
+                                        <i data-lucide="heart" class="me-2 text-primary"></i>
+                                        Emotional Review
+                                    </h5>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Did you experience any strong emotions during the session?</label>
+                                        <div class="d-flex gap-3">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="hadStrongEmotions" id="emotionsYes" value="true">
+                                                <label class="form-check-label" for="emotionsYes">Yes</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="hadStrongEmotions" id="emotionsNo" value="false">
+                                                <label class="form-check-label" for="emotionsNo">No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="emotionalDetails" class="p-4 bg-light rounded" style="display: none;">
+                                        <div class="row g-3">
+                                            <div class="col-12">
+                                                <label for="emotion" class="form-label">What was the specific emotion you felt?</label>
+                                                <textarea class="form-control" id="emotion" name="emotion" rows="2" 
+                                                    placeholder="e.g., anger, frustration, fear, anxiety, sadness, shame, helplessness, excitement, disappointment"></textarea>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="emotionTrigger" class="form-label">What was the situation that triggered this emotion?</label>
+                                                <textarea class="form-control" id="emotionTrigger" name="emotionTrigger" rows="2" 
+                                                    placeholder="Describe the hand, moment, or pattern that triggered the emotion"></textarea>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="futureResponse" class="form-label">What can you say to yourself next time in a similar situation?</label>
+                                                <textarea class="form-control" id="futureResponse" name="futureResponse" rows="2" 
+                                                    placeholder="A prepared mental response or reminder"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Post-Session Reset -->
+                                <div class="mb-4 p-4 bg-primary bg-opacity-10 rounded">
+                                    <h5 class="mb-3">
+                                        <i data-lucide="dumbbell" class="me-2 text-primary"></i>
+                                        Post-Session Reset
+                                    </h5>
+                                    
+                                    <div class="space-y-3">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="breathingDone" name="resetChecklist" value="breathing">
+                                            <label class="form-check-label" for="breathingDone">
+                                                I took a few deep breaths and mentally closed the session
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="visualizationDone" name="resetChecklist" value="visualization">
+                                            <label class="form-check-label" for="visualizationDone">
+                                                I visualized myself playing with full focus next time
+                                            </label>
+                                        </div>
+                                        
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" id="selfWorthReminder" name="resetChecklist" value="selfWorth">
+                                            <label class="form-check-label" for="selfWorthReminder">
+                                                I reminded myself: my worth is not tied to one session's outcome
+                                            </label>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <label for="resetMessage" class="form-label">What could you say to yourself now to stay grounded and confident?</label>
+                                            <textarea class="form-control" id="resetMessage" name="resetMessage" rows="2" 
+                                                placeholder="e.g., I'm committed to learning and growing from every session..."></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Hand Analysis Section -->
+                                <div class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5 class="mb-0">
+                                            <i data-lucide="check" class="me-2 text-primary"></i>
+                                            Hand Analysis
+                                        </h5>
+                                        <button type="button" class="btn btn-outline-primary btn-sm" id="addHandBtn">
+                                            <i data-lucide="plus" class="me-1"></i>
+                                            Add Hand
+                                        </button>
+                                    </div>
+                                    
+                                    <div id="handsContainer">
+                                        <!-- Hands will be added dynamically -->
+                                    </div>
+                                </div>
+
+                                <!-- Form Actions -->
+                                <div class="d-flex justify-content-between">
+                                    <a href="/" class="btn btn-outline-secondary">
+                                        Cancel
+                                    </a>
+                                    <button type="submit" class="btn btn-primary" id="completeSessionBtn">
+                                        <span class="spinner-border spinner-border-sm me-2 d-none" id="submitSpinner"></span>
+                                        Complete Session
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const form = document.getElementById('postSessionForm');
+                const emotionsYes = document.getElementById('emotionsYes');
+                const emotionsNo = document.getElementById('emotionsNo');
+                const emotionalDetails = document.getElementById('emotionalDetails');
+                const addHandBtn = document.getElementById('addHandBtn');
+                const handsContainer = document.getElementById('handsContainer');
+                const completeSessionBtn = document.getElementById('completeSessionBtn');
+                const submitSpinner = document.getElementById('submitSpinner');
+                
+                let handCount = 0;
+
+                // Show/hide emotional details
+                function toggleEmotionalDetails() {
+                    if (emotionsYes.checked) {
+                        emotionalDetails.style.display = 'block';
+                    } else {
+                        emotionalDetails.style.display = 'none';
+                    }
+                }
+
+                emotionsYes.addEventListener('change', toggleEmotionalDetails);
+                emotionsNo.addEventListener('change', toggleEmotionalDetails);
+
+                // Add hand functionality
+                addHandBtn.addEventListener('click', function() {
+                    handCount++;
+                    const handHtml = `
+                        <div class="card mb-3" id="hand-${handCount}">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="mb-0">Hand #${handCount}</h6>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="removeHand(${handCount})">
+                                    <i data-lucide="x"></i>
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-12">
+                                        <label class="form-label">Hand Description</label>
+                                        <textarea class="form-control" name="hands[${handCount}].description" rows="2" 
+                                            placeholder="Describe what happened in the hand (positions, board, actions)"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Your Initial Thought</label>
+                                        <textarea class="form-control" name="hands[${handCount}].initialThought" rows="2" 
+                                            placeholder="What were you thinking during the hand?"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Adaptive Thought</label>
+                                        <textarea class="form-control" name="hands[${handCount}].adaptiveThought" rows="2" 
+                                            placeholder="What would be a more correct or objective way to think?"></textarea>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Spot Type</label>
+                                        <select class="form-select" name="hands[${handCount}].spotType">
+                                            <option value="">Select spot type</option>
+                                            <option value="SRP">Single Raised Pot (SRP)</option>
+                                            <option value="3BET">3-bet Pot</option>
+                                            <option value="4BET">4-bet Pot</option>
+                                            <option value="5BET">5-bet+/All-in Pot</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">Priority Level</label>
+                                        <select class="form-select" name="hands[${handCount}].priority">
+                                            <option value="">Select priority</option>
+                                            <option value="HIGH">High Priority</option>
+                                            <option value="MEDIUM">Medium Priority</option>
+                                            <option value="LOW">Low Priority</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    handsContainer.insertAdjacentHTML('beforeend', handHtml);
+                    
+                    // Reinitialize Lucide icons for the new content
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+                });
+
+                // Remove hand function (global scope)
+                window.removeHand = function(handId) {
+                    const handElement = document.getElementById(`hand-${handId}`);
+                    if (handElement) {
+                        handElement.remove();
+                    }
+                };
+
+                // Form submission
+                form.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    if (!form.checkValidity()) {
+                        e.stopPropagation();
+                        form.classList.add('was-validated');
+                        return;
+                    }
+
+                    // Show loading state
+                    completeSessionBtn.disabled = true;
+                    submitSpinner.classList.remove('d-none');
+
+                    try {
+                        // Collect form data
+                        const formData = new FormData(form);
+                        const sessionData = {
+                            gameType: formData.get('gameType'),
+                            stakes: formData.get('stakes'),
+                            duration: parseInt(formData.get('duration')),
+                            performanceGrade: formData.get('performanceGrade'),
+                            mentalState: formData.get('mentalState'),
+                            energyLevel: formData.get('energyLevel') ? parseInt(formData.get('energyLevel')) : null,
+                            profit: formData.get('profit') ? parseFloat(formData.get('profit')) : null
+                        };
+
+                        // Submit session data
+                        const response = await fetch('/api/v1/sessions', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(sessionData)
+                        });
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+
+                        const createdSession = await response.json();
+                        console.log('Session created:', createdSession);
+
+                        // Collect and submit hands if any
+                        const hands = collectHandsData(formData);
+                        if (hands.length > 0) {
+                            for (const hand of hands) {
+                                await fetch(`/api/v1/sessions/${createdSession.id}/hands`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify(hand)
+                                });
+                            }
+                        }
+
+                        // Show success message
+                        if (window.PokerMentor && window.PokerMentor.showToast) {
+                            window.PokerMentor.showToast('Session completed successfully!', 'success');
+                        }
+
+                        // Redirect to dashboard after a short delay
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1500);
+
+                    } catch (error) {
+                        console.error('Error submitting session:', error);
+                        
+                        // Show error message
+                        if (window.PokerMentor && window.PokerMentor.showToast) {
+                            window.PokerMentor.showToast('Error saving session. Please try again.', 'danger');
+                        }
+                        
+                        // Reset button state
+                        completeSessionBtn.disabled = false;
+                        submitSpinner.classList.add('d-none');
+                    }
+                });
+
+                // Helper function to collect hands data
+                function collectHandsData(formData) {
+                    const hands = [];
+                    const handElements = handsContainer.querySelectorAll('.card');
+                    
+                    handElements.forEach((handElement, index) => {
+                        const handIndex = index + 1;
+                        const description = formData.get(`hands[${handIndex}].description`);
+                        
+                        if (description && description.trim()) {
+                            hands.push({
+                                description: description.trim(),
+                                initialThought: formData.get(`hands[${handIndex}].initialThought`) || '',
+                                adaptiveThought: formData.get(`hands[${handIndex}].adaptiveThought`) || '',
+                                spotType: formData.get(`hands[${handIndex}].spotType`) || '',
+                                priority: formData.get(`hands[${handIndex}].priority`) || 'MEDIUM'
+                            });
+                        }
+                    });
+                    
+                    return hands;
+                }
+            });
+        </script>
+    </main>
+</body>
+</html>

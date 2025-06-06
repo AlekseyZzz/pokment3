@@ -1,0 +1,408 @@
+openapi: 3.0.3
+info:
+  title: Poker Mentor API
+  description: AI-powered poker training and analysis platform
+  version: 1.0.0
+  contact:
+    name: Poker Mentor Team
+    email: support@pokermentor.com
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Development server
+
+paths:
+  /sessions:
+    get:
+      tags:
+        - Sessions
+      summary: Get all poker sessions
+      operationId: getSessions
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: size
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: "createdAt,desc"
+      responses:
+        '200':
+          description: List of sessions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionPage'
+    post:
+      tags:
+        - Sessions
+      summary: Create a new poker session
+      operationId: createSession
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+      responses:
+        '201':
+          description: Session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+
+  /sessions/{sessionId}:
+    get:
+      tags:
+        - Sessions
+      summary: Get session by ID
+      operationId: getSessionById
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Session details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Session'
+        '404':
+          description: Session not found
+
+  /sessions/{sessionId}/hands:
+    get:
+      tags:
+        - Hands
+      summary: Get hands for a session
+      operationId: getSessionHands
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: List of hands
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Hand'
+    post:
+      tags:
+        - Hands
+      summary: Add hand to session
+      operationId: addHandToSession
+      parameters:
+        - name: sessionId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateHandRequest'
+      responses:
+        '201':
+          description: Hand added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Hand'
+
+  /analytics/game-quality:
+    get:
+      tags:
+        - Analytics
+      summary: Get game quality analytics
+      operationId: getGameQualityAnalytics
+      parameters:
+        - name: timeRange
+          in: query
+          schema:
+            type: string
+            enum: [week, month, quarter, year]
+            default: month
+      responses:
+        '200':
+          description: Game quality data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GameQualityAnalytics'
+
+  /goals:
+    get:
+      tags:
+        - Goals
+      summary: Get user goals
+      operationId: getGoals
+      responses:
+        '200':
+          description: List of goals
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Goal'
+    post:
+      tags:
+        - Goals
+      summary: Create a new goal
+      operationId: createGoal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateGoalRequest'
+      responses:
+        '201':
+          description: Goal created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Goal'
+
+components:
+  schemas:
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        gameType:
+          type: string
+          enum: [CASH, TOURNAMENT]
+        stakes:
+          type: string
+        duration:
+          type: integer
+          description: Duration in minutes
+        performanceGrade:
+          type: string
+          enum: [A, B, C, D]
+        mentalState:
+          type: string
+        energyLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        profit:
+          type: number
+          format: double
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    CreateSessionRequest:
+      type: object
+      required:
+        - gameType
+        - stakes
+      properties:
+        gameType:
+          type: string
+          enum: [CASH, TOURNAMENT]
+        stakes:
+          type: string
+        duration:
+          type: integer
+        performanceGrade:
+          type: string
+          enum: [A, B, C, D]
+        mentalState:
+          type: string
+        energyLevel:
+          type: integer
+          minimum: 1
+          maximum: 5
+        profit:
+          type: number
+          format: double
+
+    SessionPage:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer
+
+    Hand:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        sessionId:
+          type: string
+          format: uuid
+        description:
+          type: string
+        initialThought:
+          type: string
+        adaptiveThought:
+          type: string
+        forArguments:
+          type: string
+        againstArguments:
+          type: string
+        spotType:
+          type: string
+        position:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        priority:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateHandRequest:
+      type: object
+      required:
+        - description
+      properties:
+        description:
+          type: string
+        initialThought:
+          type: string
+        adaptiveThought:
+          type: string
+        forArguments:
+          type: string
+        againstArguments:
+          type: string
+        spotType:
+          type: string
+        position:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        priority:
+          type: string
+          enum: [HIGH, MEDIUM, LOW]
+
+    GameQualityAnalytics:
+      type: object
+      properties:
+        aGamePercentage:
+          type: number
+          format: double
+        bGamePercentage:
+          type: number
+          format: double
+        cGamePercentage:
+          type: number
+          format: double
+        dGamePercentage:
+          type: number
+          format: double
+        overallWinrate:
+          type: number
+          format: double
+        monthlyProjection:
+          type: number
+          format: double
+
+    Goal:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        deadline:
+          type: string
+          format: date
+        progress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        category:
+          type: string
+          enum: [MENTAL_GAME, STRATEGY, PHYSICAL_GAME]
+        tasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Task'
+        createdAt:
+          type: string
+          format: date-time
+
+    CreateGoalRequest:
+      type: object
+      required:
+        - title
+        - deadline
+        - category
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        deadline:
+          type: string
+          format: date
+        category:
+          type: string
+          enum: [MENTAL_GAME, STRATEGY, PHYSICAL_GAME]
+
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        completed:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time

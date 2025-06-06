@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: poker-mentor-db
+    environment:
+      POSTGRES_DB: poker_mentor
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - poker-mentor-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: poker-mentor-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/poker_mentor
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: postgres
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - poker-mentor-network
+
+  webui:
+    build:
+      context: ./webui
+      dockerfile: Dockerfile
+    container_name: poker-mentor-webui
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/poker_mentor
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_PROFILES_ACTIVE: postgres
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - backend
+    networks:
+      - poker-mentor-network
+
+volumes:
+  postgres_data:
+
+networks:
+  poker-mentor-network:
+    driver: bridge
