@@ -1,69 +1,157 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-
-    <parent>
-        <groupId>com.pokermentor</groupId>
-        <artifactId>mentor</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-
-    <artifactId>api</artifactId>
-    <packaging>jar</packaging>
-
-    <name>Poker Mentor API</name>
-    <description>Generated API interfaces and models</description>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-validation</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations</artifactId>
-            <version>2.2.15</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openapitools</groupId>
-            <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.6</version>
-        </dependency>
-    </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.openapitools</groupId>
-                <artifactId>openapi-generator-maven-plugin</artifactId>
-                <version>7.0.1</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>generate</goal>
-                        </goals>
-                        <configuration>
-                            <inputSpec>${project.basedir}/src/main/resources/openapi.yaml</inputSpec>
-                            <generatorName>spring</generatorName>
-                            <apiPackage>com.pokermentor.api</apiPackage>
-                            <modelPackage>com.pokermentor.model</modelPackage>
-                            <configOptions>
-                                <interfaceOnly>true</interfaceOnly>
-                                <skipDefaultInterface>true</skipDefaultInterface>
-                                <useTags>true</useTags>
-                                <dateLibrary>java8</dateLibrary>
-                            </configOptions>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>api</artifactId>
+  <packaging>pom</packaging>
+  
+  <parent>
+    <groupId>com.pokermentor</groupId>
+    <artifactId>mentor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>  
+  </parent>
+  
+  <description>
+    This generates Java JSON model and REST API into a single JAR library respectively in "model" and "api" subpackages.
+    All the code are generated from YAML model file @api-filename.
+  </description>
+  
+  <modules>
+    <module>api-pokermentor</module>
+    <module>api-pokermentor-cli</module>
+  </modules>
+  
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>17</java.version>
+    
+    <api-package>com.pokermentor.api.api-pokermentor</api-package>
+    <api-filename>openapi.yaml</api-filename>
+    <!-- swagger magic, default values, might overrides by children-->
+    <swagger-codegen-maven-plugin-language></swagger-codegen-maven-plugin-language>
+    <swagger-codegen-maven-plugin-library></swagger-codegen-maven-plugin-library>
+    
+  </properties>
+  
+  <profiles>
+    <profile>
+      <id>dev</id>
+      <activation>
+            <activeByDefault>true</activeByDefault>
+          </activation>
+      <properties>
+        <api-filename-path>${basedir}/../api-source/dev/</api-filename-path>
+      </properties>
+        </profile>
+        <profile>
+          <id>prod</id>
+      <activation>
+            <activeByDefault>false</activeByDefault>
+          </activation>
+      <properties>
+        <api-filename-path>${basedir}/../api-source/prod/</api-filename-path>
+      </properties>
+        </profile>
+  </profiles>
+  
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <executions>
+                  <execution>
+                      <id>copy-api-file</id>
+                      <phase>clean</phase>
+                      <goals>
+                          <goal>copy-resources</goal>
+                      </goals>
+                      <configuration>
+                          <outputDirectory>${project.build.directory}/apifile</outputDirectory>
+                          <resources>
+                              <resource>
+                                  <directory>${api-filename-path}</directory>
+                                  <includes>
+                                      <include>${api-filename}</include>
+                                  </includes>
+                              </resource>
+                          </resources>
+                      </configuration>
+                  </execution>
+             </executions>
+      </plugin>    
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>2.6</version>
+          <configuration>
+            <excludes>
+<!--               <exclude>/rest/api/factories/*</exclude>
+              <exclude>/rest/api/impl/*</exclude> -->
+              <exclude>com/pokermentor/api/api_pokermentor/api/*ApiController.java</exclude>
+              <exclude>**/io/*</exclude>
+            </excludes>
+          </configuration>
+        </plugin>
+  
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.6.1</version>
+        </plugin>
+        
+        <plugin>
+                  <groupId>org.codehaus.mojo</groupId>
+                  <artifactId>build-helper-maven-plugin</artifactId>
+                  <executions>
+                      <execution>
+                          <phase>generate-sources</phase>
+                          <goals><goal>add-source</goal></goals>
+                          <configuration>
+                              <sources>
+                                  <source>${project.build.directory}/generated-sources/swagger/src/gen/java/main</source>
+                                  <!-- TODO exclude obvious boot sources from jar -> need to be cofigured in child modules-->
+                              </sources>
+                          </configuration>
+                      </execution>
+                  </executions>
+              </plugin>  
+              
+        <plugin>
+          <groupId>io.swagger</groupId>
+          <artifactId>swagger-codegen-maven-plugin</artifactId>
+          <version>2.2.2</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+              <configuration>
+                <!-- specify the swagger yaml -->
+                <inputSpec>${project.build.directory}/apifile/${api-filename}</inputSpec>
+                <!-- target to generate -->
+                <language>${swagger-codegen-maven-plugin-language}</language>
+                <!-- pass any necessary config options -->
+                <configOptions>
+                  <!-- <dateLibrary>java8</dateLibrary> -->
+                  <invokerPackage>${api-package}</invokerPackage>
+                  <modelPackage>${api-package}.model</modelPackage>
+                  <apiPackage>swagger.garbage.api</apiPackage>
+                  <sourceFolder>src/gen/java/main</sourceFolder>
+                </configOptions>
+                <!-- fix for https://github.com/swagger-api/swagger-codegen/issues/2437 -->
+                <addCompileSourceRoot>false</addCompileSourceRoot>
+                <!-- override the default library to jersey2 -->
+                <library>${swagger-codegen-maven-plugin-library}</library>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>    
+    </pluginManagement>
+  </build>
 </project>
